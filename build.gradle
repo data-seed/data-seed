@@ -12,6 +12,8 @@ repositories {
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    testCompile "junit:junit:4.12"
+    testCompile "io.mockk:mockk:1.9"
 }
 
 compileKotlin {
