@@ -2,7 +2,6 @@
 .idea/
 .kotlintest/
 build/
-gradle/
 .DS_Store
 
 ### IntelliJ IDEA ###
