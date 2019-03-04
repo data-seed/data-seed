@@ -4,4 +4,9 @@ jdk:
   - oraclejdk8
   - openjdk11
 
-script: gradle test
+before_install:
+  - chmod +x gradlew
+  - chmod +x gradle/wrapper/gradle-wrapper.jar
+
+script:
+  - ./gradlew test build
