@@ -18,6 +18,7 @@ buildscript {
 
 group 'com.github.seed'
 version '1.0.0-SNAPSHOT'
+mainClassName = 'com.github.seed.ApplicationKt'
 
 jacoco {
     toolVersion = "0.8.3"
