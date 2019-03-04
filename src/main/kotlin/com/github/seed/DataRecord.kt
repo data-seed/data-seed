@@ -8,7 +8,7 @@ class DataRecord {
         columns.forEachIndexed { index, name ->
             val value = values[index].trim()
             if (!value.isBlank()) {
-                data.put(name.trim(), value)
+                data[name.trim()] = value
             }
         }
         return data
