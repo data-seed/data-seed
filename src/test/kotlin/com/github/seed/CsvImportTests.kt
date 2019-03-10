@@ -5,7 +5,6 @@ import io.kotlintest.assertSoftly
 import io.kotlintest.extensions.TestListener
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
-import org.bson.Document
 import reactor.core.publisher.toFlux
 import reactor.core.publisher.toMono
 import reactor.test.StepVerifier
@@ -22,12 +21,7 @@ class CsvImportTests : StringSpec() {
             val collection = database.getCollection("masters")
             collection.drop().toMono().block()
 
-            // TODO: Remove this later once CsvImport.import() is implemented fully
-            val doc = Document("type", "city").append("uniqueId", "022").append("name", "Mumbai")
-                    .append("state", "Maharashtra").append("rank", 100).append("active", true)
-            collection.insertOne(doc).toMono().block()
-
-            CsvImport("cities").import()
+            CsvImport("cities").import().blockLast()
 
             val documents = collection.find().toFlux()
             StepVerifier.create(documents)
@@ -40,7 +34,16 @@ class CsvImportTests : StringSpec() {
                             it.getInteger("rank") shouldBe 100
                             it.getBoolean("active") shouldBe true
                         }
-
+                    }
+                    .assertNext {
+                        assertSoftly {
+                            it.getString("type") shouldBe "city"
+                            it.getString("uniqueId") shouldBe "020"
+                            it.getString("name") shouldBe "Pune"
+                            it.getString("state") shouldBe "Maharashtra"
+                            it.getInteger("rank") shouldBe 0
+                            it.getBoolean("active") shouldBe true
+                        }
                     }
                     .expectComplete()
                     .verify()

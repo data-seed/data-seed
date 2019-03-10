@@ -9,7 +9,7 @@ import reactor.test.StepVerifier
 class CsvReaderTests : StringSpec({
 
     "read file from cities resource folder with multiple record" {
-        val records = CsvReader("cities").parse()
+        val records = CsvReader(Configs("cities")).parse()
 
         StepVerifier.create(records)
                 .assertNext {
