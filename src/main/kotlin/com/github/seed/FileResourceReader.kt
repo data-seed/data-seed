@@ -1,23 +1,31 @@
 package com.github.seed
 
 import org.bson.Document
-import java.io.BufferedReader
+import reactor.core.publisher.Flux
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.util.stream.Stream
+
 
 class FileResourceReader {
 
-    fun readFile(fileName: String): BufferedReader {
-        // TODO change it to use java.nio.* for reading as non-blocking way
-        val stream = readFileFromClassPath(fileName) ?: readFileFromJarFileClassPath(fileName)
-        return BufferedReader(stream.reader())
+    fun readFileAsText(fileName: String) = String(Files.readAllBytes(getFilePath(fileName)))
+
+    fun readRecords(fileName: String): Flux<String> {
+        return Flux.using( { Files.lines(getFilePath(fileName)) }, { Flux.fromStream(it) }, { it.close() })
     }
 
-    fun asJsonDocument(folderName: String): Document {
-        return Document.parse(readFile("/$folderName/config.json").readText())
+    fun linesAsStream(fileName: String): Stream<String> {
+        return Files.lines(getFilePath(fileName))
     }
 
-    private fun readFileFromJarFileClassPath(fileName: String) =
-            FileResourceReader::class.java.classLoader.getResourceAsStream(fileName)
+    fun asDocument(fileName: String): Document {
+        return Document.parse(readFileAsText(fileName))
+    }
 
-    private fun readFileFromClassPath(fileName: String) = javaClass.getResourceAsStream(fileName)
+    private fun getFilePath(fileName: String): Path {
+        return Paths.get(javaClass.getResource(fileName).toURI())
+    }
 
 }

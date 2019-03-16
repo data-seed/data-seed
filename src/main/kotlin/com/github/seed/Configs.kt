@@ -2,7 +2,7 @@ package com.github.seed
 
 
 class Configs(private val folderName: String) {
-    private val config = FileResourceReader().asJsonDocument(folderName)
+    private val config = FileResourceReader().asDocument("/$folderName/config.json")
 
     fun getDataFileName(): String {
         return "/$folderName/data.csv"
@@ -17,8 +17,9 @@ class Configs(private val folderName: String) {
     }
 
     fun getTemplate(): String {
-        return FileResourceReader().readFile("/$folderName/record.json").readText()
+        return FileResourceReader().readFileAsText("/$folderName/record.json")
     }
+
 
 
 }
