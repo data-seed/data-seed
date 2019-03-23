@@ -49,8 +49,6 @@ dependencies {
     implementation('io.projectreactor:reactor-core:3.2.6.RELEASE')
     implementation('org.mongodb:mongodb-driver-reactivestreams:1.11.0')
 
-
-    testImplementation ('io.mockk:mockk:1.9')
     testImplementation('io.projectreactor:reactor-test:3.2.6.RELEASE')
     testImplementation('org.junit.jupiter:junit-jupiter-engine:5.4.0')
     testImplementation("io.kotlintest:kotlintest-runner-junit5:3.3.0")
