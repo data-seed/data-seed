@@ -1,25 +1,22 @@
 package com.github.seed
 
+import org.bson.Document
+
 
 class Configs(private val folderName: String) {
     private val config = FileResourceReader().asDocument("/$folderName/config.json")
 
-    fun getDataFileName(): String {
-        return "/$folderName/data.csv"
-    }
+    fun getDataFileName() = "/$folderName/data.csv"
 
-    fun getDatabaseName(): String {
-        return config.getString("databaseName")
-    }
+    fun getDatabaseName() = config.getString("databaseName")
 
-    fun getCollectionName(): String {
-        return config.getString("collectionName")
-    }
+    fun getCollectionName() = config.getString("collectionName")
 
-    fun getTemplate(): String {
-        return FileResourceReader().readFileAsText("/$folderName/record.json")
-    }
+    fun getTemplate() = FileResourceReader().readFileAsText("/$folderName/record.json")
 
+    fun getDropQuery() = config["dropQuery"] as Document
+
+    fun isCleanupRequired() = getDropQuery().isNotEmpty()
 
 
 }

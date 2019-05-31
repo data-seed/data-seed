@@ -7,7 +7,7 @@ import org.bson.Document
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 
-class DatabaseSink(configs: Configs) {
+class DatabaseSink(private val configs: Configs) {
     private val client: MongoClient = MongoClients.create(System.getenv("MONGODB_URL") ?: "mongodb://localhost:27017")
     private val database = client.getDatabase(configs.getDatabaseName())!!
     private val collection = database.getCollection(configs.getCollectionName())!!
