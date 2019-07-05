@@ -14,7 +14,7 @@ class CsvImport(folderName: String) {
     fun import(): Flux<Success> {
         return reader.parse()
                 .map { validator.validate(it) }
-                .map { generator.generate(it) }
+                .map { generator.generateAsJson(it) }
                 .concatMap { database.save(it) }
                 .doOnComplete { database.close() }
     }

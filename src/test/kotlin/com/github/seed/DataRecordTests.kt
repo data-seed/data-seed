@@ -29,7 +29,7 @@ class DataRecordTests : StringSpec({
             record["City Code"] shouldBe "022"
             record.shouldNotContainKey("City Name")
             record["State"] shouldBe "Maharastra"
-            record.shouldNotContainKey("Rank")
+            record shouldNotContainKey "Rank"
         }
     }
 
@@ -43,7 +43,7 @@ class DataRecordTests : StringSpec({
             record["City Code"] shouldBe "022"
             record["City Name"] shouldBe "Mumbai"
             record["State"] shouldBe "Maharastra"
-            record.shouldNotContainKey("Rank")
+            record shouldNotContainKey "Rank"
         }
     }
 })

@@ -12,6 +12,13 @@ class DatabaseSink(private val configs: Configs) {
     private val database = client.getDatabase(configs.getDatabaseName())!!
     private val collection = database.getCollection(configs.getCollectionName())!!
 
+    init {
+        if (configs.isCleanupRequired()) {
+            collection.deleteMany(configs.getDropQuery()).toMono()
+                    .subscribe { println("No of records deleted: ${it.deletedCount}") }
+        }
+    }
+
     fun save(record: RecordJson): Mono<Success> {
         return collection.insertOne(Document(record)).toMono()
     }

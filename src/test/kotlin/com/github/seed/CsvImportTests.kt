@@ -6,7 +6,6 @@ import io.kotlintest.extensions.TestListener
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import reactor.core.publisher.toFlux
-import reactor.core.publisher.toMono
 import reactor.test.StepVerifier
 
 class CsvImportTests : StringSpec() {
@@ -19,7 +18,6 @@ class CsvImportTests : StringSpec() {
             val client = MongoClients.create("mongodb://localhost:27017")
             val database = client.getDatabase("masters")
             val collection = database.getCollection("masters")
-            collection.drop().toMono().block()
 
             CsvImport("cities").import().blockLast()
 
@@ -27,22 +25,22 @@ class CsvImportTests : StringSpec() {
             StepVerifier.create(documents)
                     .assertNext {
                         assertSoftly {
-                            it.getString("type") shouldBe "city"
-                            it.getString("uniqueId") shouldBe "022"
-                            it.getString("name") shouldBe "Mumbai"
-                            it.getString("state") shouldBe "Maharashtra"
-                            it.getInteger("rank") shouldBe 100
-                            it.getBoolean("active") shouldBe true
+                            it["type"] shouldBe "city"
+                            it["uniqueId"] shouldBe "022"
+                            it["name"] shouldBe "Mumbai"
+                            it["state"] shouldBe "Maharashtra"
+                            it["rank"] shouldBe 100
+                            it["active"] shouldBe true
                         }
                     }
                     .assertNext {
                         assertSoftly {
-                            it.getString("type") shouldBe "city"
-                            it.getString("uniqueId") shouldBe "020"
-                            it.getString("name") shouldBe "Pune"
-                            it.getString("state") shouldBe "Maharashtra"
-                            it.getInteger("rank") shouldBe 0
-                            it.getBoolean("active") shouldBe true
+                            it["type"] shouldBe "city"
+                            it["uniqueId"] shouldBe "020"
+                            it["name"] shouldBe "Pune"
+                            it["state"] shouldBe "Maharashtra"
+                            it["rank"] shouldBe 0
+                            it["active"] shouldBe true
                         }
                     }
                     .expectComplete()

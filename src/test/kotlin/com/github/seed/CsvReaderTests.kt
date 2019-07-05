@@ -1,8 +1,8 @@
 package com.github.seed
 
 import io.kotlintest.assertSoftly
-import io.kotlintest.matchers.maps.shouldContain
 import io.kotlintest.matchers.maps.shouldNotContainKey
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import reactor.test.StepVerifier
 
@@ -14,18 +14,18 @@ class CsvReaderTests : StringSpec({
         StepVerifier.create(records)
                 .assertNext {
                     assertSoftly {
-                        it.shouldContain("City Code", "022")
-                        it.shouldContain("Display Name", "Mumbai")
-                        it.shouldContain("State", "Maharashtra")
-                        it.shouldContain("Rank", "100")
+                        it["City Code"] shouldBe "022"
+                        it["Display Name"] shouldBe "Mumbai"
+                        it["State"] shouldBe "Maharashtra"
+                        it["Rank"] shouldBe "100"
                     }
                 }
                 .assertNext {
                     assertSoftly {
-                        it.shouldContain("City Code", "020")
-                        it.shouldContain("Display Name", "Pune")
-                        it.shouldContain("State", "Maharashtra")
-                        it.shouldNotContainKey("Rank")
+                        it["City Code"] shouldBe "020"
+                        it["Display Name"] shouldBe "Pune"
+                        it["State"] shouldBe "Maharashtra"
+                        it shouldNotContainKey "Rank"
                     }
                 }
                 .expectComplete()

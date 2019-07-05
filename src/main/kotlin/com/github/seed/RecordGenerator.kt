@@ -5,8 +5,9 @@ import org.thymeleaf.TemplateEngine
 import org.thymeleaf.context.Context
 import org.thymeleaf.templatemode.TemplateMode
 import org.thymeleaf.templateresolver.StringTemplateResolver
+import java.util.*
 
-class RecordGenerator(private val jsonTemplate: String) {
+class RecordGenerator(private val template: String) {
     private val engine: TemplateEngine = TemplateEngine()
 
     init {
@@ -15,12 +16,12 @@ class RecordGenerator(private val jsonTemplate: String) {
         engine.addTemplateResolver(resolver)
     }
 
-    fun generate(record: RecordMap): RecordJson {
-        val context = Context()
-        context.setVariable("props", record)
-        val generatedString = engine.process(jsonTemplate, context)
-        val recordMap = BasicDBObject.parse(generatedString)
-        return RecordJson(recordMap)
+    fun generateAsJson(record: RecordMap): RecordJson {
+        return RecordJson(BasicDBObject.parse(generate(record)))
     }
 
+    fun generate(record: RecordMap): String {
+        val context = Context(Locale.getDefault(), mapOf("props" to record))
+        return engine.process(template, context)
+    }
 }
