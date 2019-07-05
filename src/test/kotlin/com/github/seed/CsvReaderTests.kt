@@ -17,7 +17,7 @@ class CsvReaderTests : StringSpec({
                         it["City Code"] shouldBe "022"
                         it["Display Name"] shouldBe "Mumbai"
                         it["State"] shouldBe "Maharashtra"
-                        it["Rank"] shouldBe "100"
+                        it["Rank"] shouldBe 100
                     }
                 }
                 .assertNext {

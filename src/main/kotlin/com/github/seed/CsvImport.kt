@@ -9,13 +9,14 @@ class CsvImport(folderName: String) {
     private val reader = CsvReader(configs)
     private val validator = RecordValidator(configs)
     private val generator = RecordGenerator(configs.getTemplate())
-    private val database = DatabaseSink(configs)
+    private val database = MongoDbSink(configs)
 
     fun import(): Flux<Success> {
         return reader.parse()
                 .map { validator.validate(it) }
-                .map { generator.generateAsJson(it) }
+                .map { generator.generateAsBson(it) }
                 .concatMap { database.save(it) }
                 .doOnComplete { database.close() }
+                .doOnError { println(it.message) }
     }
 }

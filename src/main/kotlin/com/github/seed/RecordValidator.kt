@@ -1,9 +1,15 @@
 package com.github.seed
 
-class RecordValidator(folderName: Configs) {
+import org.everit.json.schema.loader.SchemaLoader
+import org.json.JSONObject
+
+
+class RecordValidator(configs: Configs) {
+    private val tobeValidated = configs.tobeValidated()
+    private val schema = SchemaLoader.load(JSONObject(configs.getSchema()))
 
     fun validate(record: RecordMap): RecordMap {
-        // TODO just pass for now
+        if (tobeValidated)  schema.validate(JSONObject(record))
         return record
     }
 

@@ -8,15 +8,18 @@ class Configs(private val folderName: String) {
 
     fun getDataFileName() = "/$folderName/data.csv"
 
-    fun getDatabaseName() = config.getString("databaseName")
+    fun getSchema() = FileResourceReader().readFileAsText("/$folderName/schema.json")
 
-    fun getCollectionName() = config.getString("collectionName")
+    fun getDatabaseName() = config.getString("databaseName")!!
+
+    fun getCollectionName() = config.getString("collectionName")!!
 
     fun getTemplate() = FileResourceReader().readFileAsText("/$folderName/record.json")
 
     fun getDropQuery() = config["dropQuery"] as Document
 
-    fun isCleanupRequired() = getDropQuery().isNotEmpty()
+    fun isCleanupRequired() = config["seedMode"] == "drop-insert" && getDropQuery().isNotEmpty()
 
+    fun tobeValidated() = config["schemaValidation"] == true
 
 }

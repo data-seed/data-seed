@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "City Code": { "type": "string" },
+    "Display Name": { "type": "string" },
+    "State": { "type": "string" },
+    "Rank": { "type": "number", "minimum": 0, "maximum": 1000 },
+    "Active": { "type": "boolean" }
+  },
+  "required": ["City Code", "Display Name", "State" ]
+}

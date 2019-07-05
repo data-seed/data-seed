@@ -16,7 +16,7 @@ class RecordGenerator(private val template: String) {
         engine.addTemplateResolver(resolver)
     }
 
-    fun generateAsJson(record: RecordMap): RecordJson {
+    fun generateAsBson(record: RecordMap): RecordJson {
         return RecordJson(BasicDBObject.parse(generate(record)))
     }
 
