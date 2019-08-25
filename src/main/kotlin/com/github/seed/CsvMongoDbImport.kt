@@ -4,11 +4,11 @@ import com.mongodb.reactivestreams.client.Success
 import reactor.core.publisher.Flux
 
 
-class CsvImport(folderName: String) {
+class CsvMongoDbImport(folderName: String) {
     private val configs = Configs(folderName)
     private val reader = CsvReader(configs)
     private val validator = RecordValidator(configs)
-    private val generator = RecordGenerator(configs.getTemplate())
+    private val generator = RecordGenerator(configs.getJsonTemplate())
     private val database = MongoDbSink(configs)
 
     fun import(): Flux<Success> {

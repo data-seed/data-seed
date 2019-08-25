@@ -1,0 +1,6 @@
+{
+  "connectionUrl": "jdbc:h2:mem:masters",
+  "seedMode": "drop-insert",
+  "schemaValidation": true,
+  "dropQuery": "DELETE FROM MASTERS;"
+}

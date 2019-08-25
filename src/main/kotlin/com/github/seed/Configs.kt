@@ -3,23 +3,27 @@ package com.github.seed
 import org.bson.Document
 
 
-class Configs(private val folderName: String) {
-    private val config = FileResourceReader().asDocument("/$folderName/config.json")
+class Configs(val seedName: String) {
+    private val config = FileResourceReader().asDocument("/$seedName/config.json")
 
-    fun getDataFileName() = "/$folderName/data.csv"
+    fun getDataFileName() = "/$seedName/data.csv"
 
-    fun getSchema() = FileResourceReader().readFileAsText("/$folderName/schema.json")
+    fun getSchema() = FileResourceReader().readFileAsText("/$seedName/schema.json")
 
     fun getDatabaseName() = config.getString("databaseName")!!
 
     fun getCollectionName() = config.getString("collectionName")!!
 
-    fun getTemplate() = FileResourceReader().readFileAsText("/$folderName/record.json")
+    fun getJsonTemplate() = FileResourceReader().readFileAsText("/$seedName/record.json")
+    fun getSqlTemplate() = FileResourceReader().readFileAsText("/$seedName/record.sql")
 
     fun getDropQuery() = config["dropQuery"] as Document
 
-    fun isCleanupRequired() = config["seedMode"] == "drop-insert" && getDropQuery().isNotEmpty()
+    fun isCleanupRequired() = config["seedMode"] == "drop-insert"
 
     fun tobeValidated() = config["schemaValidation"] == true
+
+    fun getDatabaseUrl() = config.getString("connectionUrl")!!
+    fun getDropSqlQuery() = config.getString("dropQuery")!!
 
 }

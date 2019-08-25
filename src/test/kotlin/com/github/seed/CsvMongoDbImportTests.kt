@@ -8,7 +8,7 @@ import io.kotlintest.specs.StringSpec
 import reactor.core.publisher.toFlux
 import reactor.test.StepVerifier
 
-class CsvImportTests : StringSpec() {
+class CsvMongoDbImportTests : StringSpec() {
 
     override fun listeners(): List<TestListener> = listOf(EmbedMongoDbListener)
 
@@ -19,7 +19,7 @@ class CsvImportTests : StringSpec() {
             val database = client.getDatabase("masters")
             val collection = database.getCollection("masters")
 
-            CsvImport("cities").import().blockLast()
+            CsvMongoDbImport("cities").import().blockLast()
 
             val documents = collection.find().toFlux()
             StepVerifier.create(documents)
