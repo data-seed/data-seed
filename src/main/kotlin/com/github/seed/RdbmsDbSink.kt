@@ -7,7 +7,7 @@ import java.sql.DriverManager
 
 
 class RdbmsDbSink(private val configs: Configs) {
-    private val conn = DriverManager.getConnection(configs.getDatabaseUrl())!!
+    private val conn = DriverManager.getConnection((System.getenv("DB_URL") ?: "jdbc:h2:mem:masters"))!!
     private val stmt = conn.createStatement()
 
     init {
@@ -18,8 +18,8 @@ class RdbmsDbSink(private val configs: Configs) {
         }
     }
 
-    fun save(insertStmt: String) : Mono<Success> {
-        stmt.executeUpdate(insertStmt)
+    fun save(sqlStmt: String) : Mono<Success> {
+        stmt.executeUpdate(sqlStmt)
         return Mono.just(Success.SUCCESS)
     }
 

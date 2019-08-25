@@ -7,15 +7,15 @@ import org.bson.Document
 import reactor.core.publisher.Mono
 import reactor.core.publisher.toMono
 
-class MongoDbSink(configs: Configs) {
-    private val client: MongoClient = MongoClients.create(System.getenv("MONGODB_URL") ?: "mongodb://localhost:27017")
+class MongoDbSink(private val configs: Configs) {
+    private val client: MongoClient = MongoClients.create(System.getenv("DB_URL") ?: "mongodb://localhost:27017")
     private val database = client.getDatabase(configs.getDatabaseName())
     private val collection = database.getCollection(configs.getCollectionName())
 
     init {
         if (configs.isCleanupRequired()) {
             collection.deleteMany(configs.getDropQuery()).toMono()
-                    .subscribe { println("No of records deleted: ${it.deletedCount}") }
+                    .subscribe { println("${it.deletedCount} records deleted for ${configs.seedName}.") }
         }
     }
 
@@ -24,7 +24,7 @@ class MongoDbSink(configs: Configs) {
     }
 
     fun close() {
-        println ("closing database connection....")
+        println ("Closing database connection for ${configs.seedName}.")
         client.close()
     }
 

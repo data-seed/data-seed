@@ -10,9 +10,7 @@ class CsvRdbmsImportTests : StringSpec() {
 
     init {
         "read and import csv file with multiple records" {
-
-            val configs = Configs("cities-rdbms")
-            val conn = DriverManager.getConnection(configs.getDatabaseUrl())!!
+            val conn = DriverManager.getConnection((System.getenv("DB_URL") ?: "jdbc:h2:mem:masters"))!!
             val stmt = conn.createStatement()
             val createTable = "CREATE TABLE MASTERS(TYPE VARCHAR(50),UNIQUE_ID VARCHAR(100),NAME VARCHAR(100),STATE VARCHAR(100),RANK INT,ACTIVE BOOL);"
             stmt.executeUpdate(createTable)
