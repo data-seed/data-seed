@@ -1,44 +1,56 @@
 package com.github.seed
 
 import io.kotlintest.assertSoftly
+import io.kotlintest.extensions.TestListener
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.StringSpec
 import java.sql.DriverManager
 
 class CsvRdbmsImportTests : StringSpec() {
 
+    override fun listeners(): List<TestListener> = listOf(EmbedRdbmsListener)
 
     init {
         "read and import csv file with multiple records" {
+            CsvRdbmsImport("cities-rdbms").import().block()
+
             val conn = DriverManager.getConnection((System.getenv("DB_URL") ?: "jdbc:h2:mem:masters"))!!
             val stmt = conn.createStatement()
-            val createTable = "CREATE TABLE MASTERS(TYPE VARCHAR(50),UNIQUE_ID VARCHAR(100),NAME VARCHAR(100),STATE VARCHAR(100),RANK INT,ACTIVE BOOL);"
-            stmt.executeUpdate(createTable)
-
-            CsvRdbmsImport("cities-rdbms").import().blockLast()
-
             val rs = stmt.executeQuery("SELECT TYPE,UNIQUE_ID,NAME,STATE,RANK,ACTIVE FROM MASTERS;")!!
             rs.next()
             assertSoftly {
-                rs.getString(1) shouldBe "city"
-                rs.getString(2) shouldBe "022"
-                rs.getString(3) shouldBe "Mumbai"
-                rs.getString(4) shouldBe "Maharashtra"
-                rs.getInt(5) shouldBe 100
-                rs.getBoolean(6) shouldBe true
+                rs.getString("TYPE") shouldBe "city"
+                rs.getString("UNIQUE_ID") shouldBe "022"
+                rs.getString("NAME") shouldBe "Mumbai"
+                rs.getString("STATE") shouldBe "Maharashtra"
+                rs.getInt("RANK") shouldBe 100
+                rs.getBoolean("ACTIVE") shouldBe true
             }
             rs.next()
             assertSoftly {
-                rs.getString(1) shouldBe "city"
-                rs.getString(2) shouldBe "020"
-                rs.getString(3) shouldBe "Pune"
-                rs.getString(4) shouldBe "Maharashtra"
-                rs.getInt(5) shouldBe 0
-                rs.getBoolean(6) shouldBe true
+                rs.getString("TYPE") shouldBe "city"
+                rs.getString("UNIQUE_ID") shouldBe "020"
+                rs.getString("NAME") shouldBe "Pune"
+                rs.getString("STATE") shouldBe "Maharashtra"
+                rs.getInt("RANK") shouldBe 0
+                rs.getBoolean("ACTIVE") shouldBe true
             }
-            stmt.close()
-            conn.close()
-
         }
+
+        "import should return skipped on second run" {
+            var result = CsvRdbmsImport("cities-rdbms").import().block()!!
+            result shouldBe ImportResult.Success
+            result = CsvRdbmsImport("cities-rdbms").import().block()!!
+            result shouldBe ImportResult.Skipped
+        }
+
+        "import should execute seed when data is changed" {
+            var result = CsvRdbmsImport("cities-rdbms").import().block()!!
+            result shouldBe ImportResult.Success
+            result = CsvRdbmsImport("cities-rdbms-more").import().block()!!
+            result shouldBe ImportResult.Success
+        }
+
     }
+
 }

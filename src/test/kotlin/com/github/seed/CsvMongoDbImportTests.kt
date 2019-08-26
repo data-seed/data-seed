@@ -14,14 +14,12 @@ class CsvMongoDbImportTests : StringSpec() {
 
     init {
         "read and import csv file with multiple records" {
+            val result = CsvMongoDbImport("cities").import().block()!!
+            result shouldBe ImportResult.Success
 
             val client = MongoClients.create("mongodb://localhost:27017")
             val database = client.getDatabase("masters")
-            val collection = database.getCollection("masters")
-
-            CsvMongoDbImport("cities").import().blockLast()
-
-            val documents = collection.find().toFlux()
+            val documents = database.getCollection("masters").find().toFlux()
             StepVerifier.create(documents)
                     .assertNext {
                         assertSoftly {
@@ -45,7 +43,20 @@ class CsvMongoDbImportTests : StringSpec() {
                     }
                     .expectComplete()
                     .verify()
+        }
 
+        "import should return skipped on second run" {
+            var result = CsvMongoDbImport("cities").import().block()!!
+            result shouldBe ImportResult.Success
+            result = CsvMongoDbImport("cities").import().block()!!
+            result shouldBe ImportResult.Skipped
+        }
+
+        "import should execute seed when data is changed" {
+            var result = CsvMongoDbImport("cities").import().block()!!
+            result shouldBe ImportResult.Success
+            result = CsvMongoDbImport("cities-more").import().block()!!
+            result shouldBe ImportResult.Success
         }
     }
 }

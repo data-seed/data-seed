@@ -33,4 +33,14 @@ class CsvReaderTests : StringSpec({
 
     }
 
+    "test should generate same checksum for data.csv inside cities and cities-rdbms having same content" {
+        CsvReader(Configs("cities")).checksum() shouldBe "F125E78C8B254A24C830889E3AEA30A5"
+        CsvReader(Configs("cities-rdbms")).checksum() shouldBe "F125E78C8B254A24C830889E3AEA30A5"
+    }
+
+    "test should generate different checksum for data.csv inside cities and cities2 having different content" {
+        CsvReader(Configs("cities")).checksum() shouldBe "F125E78C8B254A24C830889E3AEA30A5"
+        CsvReader(Configs("cities-more")).checksum() shouldBe "DA0226B4B2F11E051DF49C109693E9AD"
+    }
+
 })

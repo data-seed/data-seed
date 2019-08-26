@@ -5,20 +5,21 @@ import reactor.core.publisher.Flux
 
 
 class CsvReader(private val configs: Configs) {
+    private val dataFile = FileResourceReader(configs.getDataFileName())
     private val parser = CSVParser()
 
     fun parse() : Flux<RecordMap> {
-        val fileName = configs.getDataFileName()
-
-        val file = FileResourceReader()
-        val header = file.linesAsStream(fileName).findFirst().get()
+        val header = dataFile.linesAsStream().findFirst().get()
         val columns = parser.parseLine(header)
 
-        return file.readRecords(fileName)
+        return dataFile.readRecords()
                 .skip(1)
                 .map { DataRecord().build(columns,parser.parseLine(it)) }
     }
 
+    fun checksum(): String {
+        return dataFile.checksum()
+    }
 
 
 }

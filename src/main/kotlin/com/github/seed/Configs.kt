@@ -3,19 +3,20 @@ package com.github.seed
 import org.bson.Document
 
 
-class Configs(val seedName: String) {
-    private val config = FileResourceReader().asDocument("/$seedName/config.json")
+class Configs(private val seedFolder: String) {
+    private val config = FileResourceReader("/$seedFolder/config.json").asDocument()
 
-    fun getDataFileName() = "/$seedName/data.csv"
+    fun seedName()  = config.getString("seedName") ?: seedFolder
+    fun getDataFileName() = "/$seedFolder/data.csv"
 
     fun tobeValidated() = config["schemaValidation"] == true
-    fun getSchema() = FileResourceReader().readFileAsText("/$seedName/schema.json")
+    fun getSchema() = FileResourceReader("/$seedFolder/schema.json").readFileAsText()
 
     fun getDatabaseName() = config.getString("databaseName")!!
     fun getCollectionName() = config.getString("collectionName")!!
 
-    fun getJsonTemplate() = FileResourceReader().readFileAsText("/$seedName/record.json")
-    fun getSqlTemplate() = FileResourceReader().readFileAsText("/$seedName/record.sql")
+    fun getJsonTemplate() = FileResourceReader("/$seedFolder/record.json").readFileAsText()
+    fun getSqlTemplate() = FileResourceReader("/$seedFolder/record.sql").readFileAsText()
 
     fun isCleanupRequired() = config["seedMode"] == "drop-insert"
     fun getDropQuery() = config["dropQuery"] as Document
