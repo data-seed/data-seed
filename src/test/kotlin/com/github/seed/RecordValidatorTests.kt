@@ -7,9 +7,9 @@ class RecordValidatorTests : StringSpec({
 
     "valid record" {
 
-        val columns = arrayOf("City Code","Display Name","State","Rank[Int]")
-        val values = arrayOf("022","Mumbai","Maharastra","100")
-        val record = DataRecord(1).build(columns,values)
+        val columns = arrayOf("City Code", "Display Name", "State", "Rank[Int]")
+        val values = arrayOf("022", "Mumbai", "Maharastra", "100")
+        val record = DataRecord(1).build(columns, values)
 
         val configs = Configs("cities")
         val validator = RecordValidator(configs)
@@ -19,9 +19,9 @@ class RecordValidatorTests : StringSpec({
     }
 
     "invalid record, multiple validation failed for a record" {
-        val columns = arrayOf("City Code","Display Name","State","Rank[Int]")
-        val values = arrayOf("02A","Mumbai","Maharastra","2000")
-        val record = DataRecord(5).build(columns,values)
+        val columns = arrayOf("City Code", "Display Name", "State", "Rank[Int]")
+        val values = arrayOf("02A", "Mumbai", "Maharastra", "2000")
+        val record = DataRecord(5).build(columns, values)
 
         val configs = Configs("cities")
         val validator = RecordValidator(configs)

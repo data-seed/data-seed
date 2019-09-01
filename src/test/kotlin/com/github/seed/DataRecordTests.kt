@@ -8,9 +8,9 @@ import io.kotlintest.specs.StringSpec
 class DataRecordTests : StringSpec({
 
     "read record with all values present with respective data type string, integer, number and boolean" {
-        val columns = arrayOf("City Code","City Name","State","Rank[Int]","Active[Boolean]","Latitude[Number]","Longitude[Number]")
-        val values = arrayOf("022","Mumbai","Maharastra","100","false","18.52","73.86")
-        val record = DataRecord(1).build(columns,values)
+        val columns = arrayOf("City Code", "City Name", "State", "Rank[Int]", "Active[Boolean]", "Latitude[Number]", "Longitude[Number]")
+        val values = arrayOf("022", "Mumbai", "Maharastra", "100", "false", "18.52", "73.86")
+        val record = DataRecord(1).build(columns, values)
 
         assertSoftly {
             record["City Code"] shouldBe "022"
@@ -23,9 +23,9 @@ class DataRecordTests : StringSpec({
     }
 
     "read record with all few values absent" {
-        val columns = arrayOf("City Code","City Name","State","Rank[Int]")
-        val values = arrayOf("022","","Maharastra","")
-        val record = DataRecord(1).build(columns,values)
+        val columns = arrayOf("City Code", "City Name", "State", "Rank[Int]")
+        val values = arrayOf("022", "", "Maharastra", "")
+        val record = DataRecord(1).build(columns, values)
 
         assertSoftly {
             record["City Code"] shouldBe "022"
@@ -37,9 +37,9 @@ class DataRecordTests : StringSpec({
 
 
     "read record with values having extra spaces at the end" {
-        val columns = arrayOf("City Code ","City Name"," State","Rank[Int]")
-        val values = arrayOf(" 022","Mumbai ","Maharastra","")
-        val record = DataRecord(1).build(columns,values)
+        val columns = arrayOf("City Code ", "City Name", " State", "Rank[Int]")
+        val values = arrayOf(" 022", "Mumbai ", "Maharastra", "")
+        val record = DataRecord(1).build(columns, values)
 
         assertSoftly {
             record["City Code"] shouldBe "022"

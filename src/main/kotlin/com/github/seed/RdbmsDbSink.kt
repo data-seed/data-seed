@@ -20,6 +20,7 @@ class RdbmsDbSink(configs: Configs) : DatabaseSink(configs) {
             else -> true
         }
     }
+
     override fun dropData() {
         println("Running cleanup script for ${configs.seedName()}.")
         val count = stmt.executeUpdate(configs.getDropSqlQuery())

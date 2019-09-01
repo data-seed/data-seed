@@ -13,7 +13,7 @@ class FileResourceReader(private val fileName: String) {
     fun readFileAsText() = String(Files.readAllBytes(getFilePath()))
 
     fun readRecords(): Flux<String> {
-        return Flux.using( { Files.lines(getFilePath()) }, { Flux.fromStream(it) }, { it.close() })
+        return Flux.using({ Files.lines(getFilePath()) }, { Flux.fromStream(it) }, { it.close() })
     }
 
     fun linesAsStream(): Stream<String> {

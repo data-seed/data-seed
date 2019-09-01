@@ -6,7 +6,7 @@ import org.json.JSONObject
 
 
 class RecordValidator(val configs: Configs) {
-    private val validationErrors = mutableMapOf<Int,List<String>>()
+    private val validationErrors = mutableMapOf<Int, List<String>>()
     private val tobeValidated = configs.tobeValidated()
     private val schema = SchemaLoader.load(JSONObject(configs.getSchema()))
 

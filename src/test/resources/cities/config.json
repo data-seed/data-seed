@@ -4,5 +4,7 @@
   "collectionName": "masters",
   "seedMode": "drop-insert",
   "schemaValidation": true,
-  "dropQuery": { "type": "city"}
+  "dropQuery": {
+    "type": "city"
+  }
 }

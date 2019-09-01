@@ -18,15 +18,15 @@ class DataRecord(private val index: Int) {
     }
 
     private fun clean(column: String): String {
-        return regex.replace(column,"")
+        return regex.replace(column, "")
     }
 
     private fun convertType(column: String, value: String): Any {
         val result = regex.find(column) ?: return value
         return when (result.value) {
-            "[Int]","[int]","[integer]","[Integer]" -> value.toInt()
+            "[Int]", "[int]", "[integer]", "[Integer]" -> value.toInt()
             "[Number]" -> value.toFloat()
-            "[Bool]","[bool]","[Boolean]","[boolean]" -> value.toBoolean()
+            "[Bool]", "[bool]", "[Boolean]", "[boolean]" -> value.toBoolean()
             else -> value
         }
     }

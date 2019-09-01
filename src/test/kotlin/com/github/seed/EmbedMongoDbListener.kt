@@ -21,9 +21,9 @@ object EmbedMongoDbListener : TestListener {
 
     override fun beforeSpec(spec: Spec) {
         val mongodConfig = MongodConfigBuilder()
-            .version(Version.Main.PRODUCTION)
-            .net(Net("localhost", 27017, Network.localhostIsIPv6()))
-            .build()
+                .version(Version.Main.PRODUCTION)
+                .net(Net("localhost", 27017, Network.localhostIsIPv6()))
+                .build()
 
         mongodExecutable = starter.prepare(mongodConfig)
         mongod = mongodExecutable.start()

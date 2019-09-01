@@ -6,7 +6,7 @@ import org.bson.Document
 class Configs(private val seedFolder: String) {
     private val config = FileResourceReader("/$seedFolder/config.json").asDocument()
 
-    fun seedName()  = config.getString("seedName") ?: seedFolder
+    fun seedName() = config.getString("seedName") ?: seedFolder
     fun getDataFileName() = "/$seedFolder/data.csv"
 
     fun tobeValidated() = config["schemaValidation"] == true
