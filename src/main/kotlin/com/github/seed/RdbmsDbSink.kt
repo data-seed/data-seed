@@ -1,27 +1,36 @@
 package com.github.seed
 
 import reactor.core.publisher.Mono
+import reactor.core.publisher.toMono
 import java.sql.DriverManager
 import java.sql.Timestamp
 import java.time.LocalDateTime
 
 
-class RdbmsDbSink(private val configs: Configs) {
+class RdbmsDbSink(configs: Configs) : DatabaseSink(configs) {
     private val conn = DriverManager.getConnection((System.getenv("DB_URL") ?: "jdbc:h2:mem:masters"))!!
     private val stmt = conn.createStatement()
 
-    fun dropData() {
+    override fun isSeedChanged(checksum: String): Boolean {
+        createHistoryTableIfDoesNotExists()
+        val query = "SELECT SEED_NAME, CHECKSUM, SEED_TIMESTAMP FROM DATA_SEED_SCHEMA_HISTORY ORDER BY SEED_TIMESTAMP DESC LIMIT 1"
+        val result = stmt.executeQuery(query)
+        return when {
+            result?.next() == true -> result.getString("CHECKSUM") != checksum
+            else -> true
+        }
+    }
+    override fun dropData() {
         println("Running cleanup script for ${configs.seedName()}.")
         val count = stmt.executeUpdate(configs.getDropSqlQuery())
         println("$count records deleted for ${configs.seedName()}.")
     }
 
-    fun save(sqlStmt: String): Mono<ImportResult> {
-        stmt.executeUpdate(sqlStmt)
-        return Mono.just(ImportResult.Success)
+    override fun save(record: String): Mono<ImportResult> {
+        return stmt.executeUpdate(record).toMono().thenReturn(ImportResult.Success)
     }
 
-    fun updateSeedHistory(checksum: String) {
+    override fun updateSeedHistory(checksum: String) {
         println("Inserting DATA_SEED_SCHEMA_HISTORY for executing seed ${configs.seedName()}.")
         createHistoryTableIfDoesNotExists()
         val sql = "INSERT INTO DATA_SEED_SCHEMA_HISTORY(SEED_NAME,CHECKSUM,SEED_TIMESTAMP) VALUES(?,?,?)"
@@ -42,20 +51,11 @@ class RdbmsDbSink(private val configs: Configs) {
         }
     }
 
-    fun close() {
+    override fun close() {
         println("Closing database connection for ${configs.seedName()}.")
         stmt.close()
         conn.close()
     }
 
-    fun isSeedChanged(checksum: String): Boolean {
-        createHistoryTableIfDoesNotExists()
-        val query = "SELECT SEED_NAME, CHECKSUM, SEED_TIMESTAMP FROM DATA_SEED_SCHEMA_HISTORY ORDER BY SEED_TIMESTAMP DESC LIMIT 1"
-        val result = stmt.executeQuery(query)
-        return when {
-            result?.next() == true -> result.getString("CHECKSUM") != checksum
-            else -> true
-        }
-    }
 
 }

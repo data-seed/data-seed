@@ -7,9 +7,9 @@ import io.kotlintest.specs.StringSpec
 
 class DataRecordTests : StringSpec({
 
-    "read record with all values present" {
-        val columns = arrayOf("City Code","City Name","State","Rank[Int]","Active[Boolean]")
-        val values = arrayOf("022","Mumbai","Maharastra","100","false")
+    "read record with all values present with respective data type string, integer, number and boolean" {
+        val columns = arrayOf("City Code","City Name","State","Rank[Int]","Active[Boolean]","Latitude[Number]","Longitude[Number]")
+        val values = arrayOf("022","Mumbai","Maharastra","100","false","18.52","73.86")
         val record = DataRecord().build(columns,values)
 
         assertSoftly {
@@ -17,7 +17,8 @@ class DataRecordTests : StringSpec({
             record["City Name"] shouldBe "Mumbai"
             record["State"] shouldBe "Maharastra"
             record["Rank"] shouldBe 100
-            record["Active"] shouldBe false
+            record["Latitude"] shouldBe 18.52f
+            record["Longitude"] shouldBe 73.86f
         }
     }
 

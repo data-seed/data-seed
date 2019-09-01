@@ -8,7 +8,7 @@ import reactor.test.StepVerifier
 
 class CsvReaderTests : StringSpec({
 
-    "read file from cities resource folder with multiple record" {
+    "read file from cities resource folder with multiple record and data type" {
         val records = CsvReader(Configs("cities")).parse()
 
         StepVerifier.create(records)

@@ -15,8 +15,7 @@ class Configs(private val seedFolder: String) {
     fun getDatabaseName() = config.getString("databaseName")!!
     fun getCollectionName() = config.getString("collectionName")!!
 
-    fun getJsonTemplate() = FileResourceReader("/$seedFolder/record.json").readFileAsText()
-    fun getSqlTemplate() = FileResourceReader("/$seedFolder/record.sql").readFileAsText()
+    fun getDbTemplate() = FileResourceReader("/$seedFolder/record.db").readFileAsText()
 
     fun isCleanupRequired() = config["seedMode"] == "drop-insert"
     fun getDropQuery() = config["dropQuery"] as Document
