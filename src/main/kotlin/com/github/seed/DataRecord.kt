@@ -1,11 +1,12 @@
 package com.github.seed
 
 
-class DataRecord {
-    val regex = """\[(.*?)\]""".toRegex()
+class DataRecord(private val index: Int) {
+    val regex = """\[(.*?)\]$""".toRegex()
 
     fun build(columns: Array<String>, values: Array<String>): RecordMap {
         val data = RecordMap()
+        data["_index"] = index
         columns.forEachIndexed { index, actualColumnName ->
             val value = values[index].trim()
             val column = actualColumnName.trim()

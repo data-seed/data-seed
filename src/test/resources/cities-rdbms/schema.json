@@ -1,7 +1,7 @@
 {
   "type": "object",
   "properties": {
-    "City Code": { "type": "string" },
+    "City Code": { "type": "string", "pattern": "^\\d{0,4}$" },
     "Display Name": { "type": "string" },
     "State": { "type": "string" },
     "Rank": { "type": "number", "minimum": 0, "maximum": 1000 },

@@ -1,0 +1,10 @@
+{
+  "type": "city",
+  "uniqueId": "[(${props['City Code']})]",
+  "name": "[(${props['Display Name']})]",
+
+  "state": "[(${props['State']})]",
+
+  "rank": [(${props['Rank']}?: 0)],
+  "active": true
+}

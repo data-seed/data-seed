@@ -1,0 +1,8 @@
+{
+  "seedName": "cities",
+  "databaseName": "masters",
+  "collectionName": "masters",
+  "seedMode": "drop-insert",
+  "schemaValidation": true,
+  "dropQuery": { "type": "city"}
+}

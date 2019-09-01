@@ -27,7 +27,7 @@ class RdbmsDbSink(configs: Configs) : DatabaseSink(configs) {
     }
 
     override fun save(record: String): Mono<ImportResult> {
-        return stmt.executeUpdate(record).toMono().thenReturn(ImportResult.Success)
+        return stmt.executeUpdate(record).toMono().thenReturn(ImportResult.Complete)
     }
 
     override fun updateSeedHistory(checksum: String) {

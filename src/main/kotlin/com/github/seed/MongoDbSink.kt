@@ -28,7 +28,7 @@ class MongoDbSink(configs: Configs) : DatabaseSink(configs){
     }
 
     override fun save(record: String): Mono<ImportResult> {
-        return collection.insertOne(Document(BasicDBObject.parse(record))).toMono().thenReturn(ImportResult.Success)
+        return collection.insertOne(Document(BasicDBObject.parse(record))).toMono().thenReturn(ImportResult.Complete)
     }
 
     override fun updateSeedHistory(checksum: String) {

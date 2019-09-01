@@ -13,9 +13,28 @@ class CsvMongoDbImportTests : StringSpec() {
     override fun listeners(): List<TestListener> = listOf(EmbedMongoDbListener)
 
     init {
+        "should validate successfully for correct data file" {
+            val result = CsvMongoDbImport("cities").import(true)
+            StepVerifier.create(result).assertNext { it shouldBe ImportResult.Validated }.expectComplete().verify()
+        }
+
+        "should show validation error for incorrect data file" {
+            val csvImport = CsvMongoDbImport("cities-bad-data")
+            val result = csvImport.import(true)
+            StepVerifier.create(result).assertNext {
+                it shouldBe ImportResult.Validated
+
+                val errors = csvImport.validationErrors()
+                errors.size shouldBe 2
+                errors[1] shouldBe listOf("#/Rank: 20000 is not less or equal to 1000")
+                errors[3] shouldBe listOf("#/Rank: 50000 is not less or equal to 1000")
+            }.expectComplete().verify()
+
+        }
+
         "read and import csv file with multiple records" {
             val result = CsvMongoDbImport("cities").import().block()!!
-            result shouldBe ImportResult.Success
+            result shouldBe ImportResult.Complete
 
             val client = MongoClients.create("mongodb://localhost:27017")
             val database = client.getDatabase("masters")
@@ -47,16 +66,16 @@ class CsvMongoDbImportTests : StringSpec() {
 
         "import should return skipped on second run" {
             var result = CsvMongoDbImport("cities").import().block()!!
-            result shouldBe ImportResult.Success
+            result shouldBe ImportResult.Complete
             result = CsvMongoDbImport("cities").import().block()!!
             result shouldBe ImportResult.Skipped
         }
 
         "import should execute seed when data is changed" {
             var result = CsvMongoDbImport("cities").import().block()!!
-            result shouldBe ImportResult.Success
+            result shouldBe ImportResult.Complete
             result = CsvMongoDbImport("cities-more").import().block()!!
-            result shouldBe ImportResult.Success
+            result shouldBe ImportResult.Complete
         }
     }
 }

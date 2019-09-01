@@ -16,8 +16,8 @@ object EmbedRdbmsListener : TestListener {
     }
 
     override fun afterTest(testCase: TestCase, result: TestResult) {
-        stmt.executeUpdate("DROP TABLE DATA_SEED_SCHEMA_HISTORY")
-        stmt.executeUpdate("DROP TABLE MASTERS")
+        try { stmt.executeUpdate("DROP TABLE DATA_SEED_SCHEMA_HISTORY") } catch (e: Exception) {}
+        try { stmt.executeUpdate("DROP TABLE MASTERS") } catch (e: Exception) {}
     }
 
     override fun afterSpec(spec: Spec) {
