@@ -64,6 +64,28 @@ class CsvMongoDbImportTests : StringSpec() {
                     .verify()
         }
 
+        "should filter validation errored records during import" {
+            val result = CsvMongoDbImport("cities-bad-data").import().block()!!
+            result shouldBe ImportResult.Complete
+
+            val client = MongoClients.create("mongodb://localhost:27017")
+            val database = client.getDatabase("masters")
+            val documents = database.getCollection("masters").find().toFlux()
+            StepVerifier.create(documents)
+                    .assertNext {
+                        assertSoftly {
+                            it["type"] shouldBe "city"
+                            it["uniqueId"] shouldBe "020"
+                            it["name"] shouldBe "Pune"
+                            it["state"] shouldBe "Maharashtra"
+                            it["rank"] shouldBe 0
+                            it["active"] shouldBe true
+                        }
+                    }
+                    .expectComplete()
+                    .verify()
+        }
+
         "import should return skipped on second run" {
             var result = CsvMongoDbImport("cities").import().block()!!
             result shouldBe ImportResult.Complete

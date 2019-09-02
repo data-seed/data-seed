@@ -12,12 +12,12 @@ abstract class CsvImport(folderName: String) {
 
     fun validationErrors() = validator.validationErrors()
 
-    fun import(dryRun: Boolean = (System.getenv("DRY_RUN") ?: "false").toBoolean()): Mono<ImportResult> {
+    fun import(validateOnly: Boolean = (System.getenv("VALIDATE_ONLY") ?: "false").toBoolean()): Mono<ImportResult> {
         return when {
-            dryRun -> {
+            validateOnly -> {
                 println("Running just validation for ${configs.seedName()}.")
                 reader.parse()
-                        .map { validator.validate(it) }
+                        .map { validator.validate(it, true) }
                         .doOnError { println(it.message) }
                         .then(Mono.just(ImportResult.Validated))
             }
@@ -25,7 +25,7 @@ abstract class CsvImport(folderName: String) {
                 println("Changes detected for ${configs.seedName()}, executing seed.")
                 if (configs.isCleanupRequired()) dbSink.dropData()
                 reader.parse()
-                        .map { validator.validate(it) }
+                        .filter { validator.validate(it) }
                         .map { generator.generate(it) }
                         .concatMap { dbSink.save(it) }
                         .doOnComplete { dbSink.updateSeedHistory(reader.checksum()) }

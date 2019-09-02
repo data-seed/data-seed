@@ -7,22 +7,22 @@ import org.json.JSONObject
 
 class RecordValidator(val configs: Configs) {
     private val validationErrors = mutableMapOf<Int, List<String>>()
-    private val tobeValidated = configs.tobeValidated()
     private val schema = SchemaLoader.load(JSONObject(configs.getSchema()))
 
     fun validationErrors() = validationErrors.toMap()
     fun isErrors() = validationErrors.isNotEmpty()
 
-    fun validate(record: RecordMap): RecordMap {
+    fun validate(record: RecordMap, tobeValidated: Boolean = configs.tobeValidated()): Boolean {
         if (tobeValidated) {
             try {
                 schema.validate(JSONObject(record))
             } catch (e: ValidationException) {
                 print("Validation errors for seed '${configs.seedName()}' at index #${record["_index"]} : ${e.allMessages}")
                 validationErrors[record["_index"] as Int] = e.allMessages
+                return false
             }
         }
-        return record
+        return true
     }
 
 }
